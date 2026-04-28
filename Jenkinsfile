@@ -4,13 +4,13 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/rohitkalal1122/attendance-system.git'
+                git branch: 'main', url: 'https://github.com/rohitkalal1122/attendance-system.git'
             }
         }
 
         stage('Build') {
             steps {
-                bat 'echo Building project...'
+                bat 'echo Building Attendance Project...'
             }
         }
     }
