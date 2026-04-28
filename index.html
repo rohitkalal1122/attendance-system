@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>EduAttend - Student Attendance System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, 'Segoe UI', 'Inter', 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(145deg, #e9f0fc 0%, #d9e4f5 100%);
+            min-height: 100vh;
+            padding: 30px 20px;
+        }
+
+        /* main container */
+        .app-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* header section */
+        .header {
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(12px);
+            border-radius: 42px;
+            padding: 20px 32px;
+            margin-bottom: 32px;
+            box-shadow: 0 12px 28px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.02);
+            border: 1px solid rgba(255,255,255,0.6);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .title-section h1 {
+            font-size: 1.9rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #1E3C72, #2A5298);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            letter-spacing: -0.3px;
+        }
+
+        .title-section p {
+            color: #2c3e66;
+            font-weight: 500;
+            font-size: 0.9rem;
+            margin-top: 6px;
+        }
+
+        .stats-badge {
+            background: white;
+            padding: 8px 24px;
+            border-radius: 80px;
+            display: flex;
+            gap: 24px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-weight: 800;
+            font-size: 1.6rem;
+            color: #1e466e;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #5a6e8a;
+        }
+
+        /* card style */
+        .card {
+            background: white;
+            border-radius: 32px;
+            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.1);
+            padding: 24px 28px;
+            margin-bottom: 32px;
+            transition: all 0.2s ease;
+            border: 1px solid #f0f2f8;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #0a2540;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-left: 5px solid #2a6f97;
+            padding-left: 18px;
+        }
+
+        /* form group */
+        .form-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 18px;
+            align-items: flex-end;
+            margin-bottom: 12px;
+        }
+
+        .input-group {
+            flex: 1;
+            min-width: 160px;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.8rem;
+            margin-bottom: 6px;
+            color: #1f3a5f;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 24px;
+            border: 1.5px solid #e2e8f0;
+            background: #fefefe;
+            font-size: 0.95rem;
+            transition: 0.2s;
+            outline: none;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            border-color: #2a6f97;
+            box-shadow: 0 0 0 3px rgba(42,111,151,0.2);
+        }
+
+        .btn {
+            border: none;
+            background: #2a6f97;
+            color: white;
+            padding: 12px 26px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+
+        .btn-secondary {
+            background: #5a6e8a;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1.5px solid #2a6f97;
+            color: #2a6f97;
+            box-shadow: none;
+        }
+
+        .btn-outline:hover {
+            background: #eef4fc;
+        }
+
+        .btn-danger {
+            background: #c44536;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.02);
+            box-shadow: 0 8px 18px rgba(0,0,0,0.1);
+        }
+
+        .filter-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .search-box input {
+            padding: 10px 18px;
+            border-radius: 60px;
+            border: 1px solid #cfdfed;
+            width: 240px;
+        }
+
+        /* table styles */
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 24px;
+        }
+
+        .attendance-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        .attendance-table th {
+            text-align: left;
+            padding: 16px 12px;
+            background-color: #f8fafd;
+            color: #1f3a5f;
+            font-weight: 600;
+            border-bottom: 2px solid #e2edf7;
+        }
+
+        .attendance-table td {
+            padding: 14px 12px;
+            border-bottom: 1px solid #ecf3f9;
+            vertical-align: middle;
+        }
+
+        .student-name {
+            font-weight: 600;
+            color: #0b2b42;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-align: center;
+            min-width: 80px;
+        }
+
+        .status-present {
+            background: #dff3e3;
+            color: #1e6f3f;
+        }
+
+        .status-absent {
+            background: #ffe2df;
+            color: #b13e2d;
+        }
+
+        .status-late {
+            background: #fff0db;
+            color: #b46f1a;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 6px 10px;
+            border-radius: 30px;
+            transition: 0.1s;
+        }
+
+        .icon-btn.edit-btn {
+            color: #2c6e9e;
+        }
+        .icon-btn.delete-btn {
+            color: #c13b2b;
+        }
+        .icon-btn:hover {
+            background: #f0f3f9;
+        }
+
+        .empty-row td {
+            text-align: center;
+            padding: 48px;
+            color: #7c8ba0;
+            font-style: italic;
+        }
+
+        /* responsive */
+        @media (max-width: 720px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .card {
+                padding: 18px;
+            }
+            .stats-badge {
+                width: 100%;
+                justify-content: space-between;
+            }
+            .form-grid {
+                flex-direction: column;
+            }
+        }
+        footer {
+            text-align: center;
+            margin-top: 28px;
+            font-size: 0.75rem;
+            color: #43719c;
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="header">
+        <div class="title-section">
+            <h1>📋 Student Attendance Hub</h1>
+            <p>Track, manage & mark attendance with ease</p>
+        </div>
+        <div class="stats-badge" id="statsPanel">
+            <div class="stat"><div class="stat-number" id="totalStudents">0</div><div class="stat-label">Total</div></div>
+            <div class="stat"><div class="stat-number" id="presentToday">0</div><div class="stat-label">Present today</div></div>
+            <div class="stat"><div class="stat-number" id="absentToday">0</div><div class="stat-label">Absent</div></div>
+        </div>
+    </div>
+
+    <!-- Add / Edit student card -->
+    <div class="card">
+        <div class="card-title">✏️ Manage Students</div>
+        <div class="form-grid" id="studentForm">
+            <div class="input-group">
+                <label>Full name</label>
+                <input type="text" id="studentName" placeholder="e.g. Priya Sharma" autocomplete="off">
+            </div>
+            <div class="input-group">
+                <label>Roll No / ID</label>
+                <input type="text" id="studentRoll" placeholder="Unique ID (e.g. 101)">
+            </div>
+            <div class="input-group">
+                <label>Class / Section</label>
+                <input type="text" id="studentClass" placeholder="e.g. 10-A" value="10-A">
+            </div>
+            <div class="input-group" style="flex:0.5; min-width:120px;">
+                <button type="button" id="addStudentBtn" class="btn">➕ Add Student</button>
+            </div>
+            <div class="input-group" style="flex:0.5; min-width:120px;">
+                <button type="button" id="cancelEditBtn" class="btn btn-secondary" style="background:#b0bed0;">Cancel Edit</button>
+            </div>
+        </div>
+        <div style="font-size:0.7rem; margin-top:12px; color:#4d6a8f;">⚠️ Roll No must be unique. Edit by clicking ✏️ on student row.</div>
+    </div>
+
+    <!-- Mark Attendance card -->
+    <div class="card">
+        <div class="card-title">📆 Mark Today's Attendance</div>
+        <div class="filter-bar">
+            <div class="search-box">
+                <input type="text" id="searchStudentInput" placeholder="🔍 Search by name or roll...">
+                <select id="filterStatusSelect" style="padding:8px 14px; border-radius:40px; border:1px solid #cfdfed;">
+                    <option value="all">All status</option>
+                    <option value="present">Present</option>
+                    <option value="absent">Absent</option>
+                    <option value="late">Late</option>
+                </select>
+            </div>
+            <div>
+                <button id="markAllPresentBtn" class="btn btn-outline" style="margin-right:10px;">✅ Mark All Present</button>
+                <button id="resetTodayBtn" class="btn btn-secondary">🔄 Reset Today</button>
+            </div>
+        </div>
+        <div class="table-wrapper">
+            <table class="attendance-table" id="attendanceTable">
+                <thead>
+                    <tr><th>Roll No</th><th>Student Name</th><th>Class</th><th>Attendance Status</th><th>Actions</th></tr>
+                </thead>
+                <tbody id="attendanceTableBody">
+                    <tr class="empty-row"><td colspan="5">👩‍🎓 No students found. Add some students first.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- attendance history / summary log (simple) -->
+    <div class="card">
+        <div class="card-title">📅 Today's Log & Quick Actions</div>
+        <div style="display: flex; gap: 14px; flex-wrap: wrap; justify-content: space-between; align-items: center;">
+            <div><span style="font-weight:500;">🗓️ Date: </span><span id="currentDateDisplay"></span></div>
+            <div><button id="exportSummaryBtn" class="btn btn-outline">📎 Export Summary (CSV)</button>
+            <button id="demoDataBtn" class="btn btn-secondary" style="margin-left:8px;">📚 Load Demo Class</button></div>
+        </div>
+        <div style="margin-top: 20px; background:#f9fbfe; border-radius: 28px; padding: 14px; font-size:0.8rem; color:#4a627a;">
+            💡 Tip: Each day's attendance is separate. Today’s date: <strong id="dateHint"></strong>. Use status dropdown to filter, edit name/roll via edit icon.
+        </div>
+    </div>
+    <footer>📌 Attendance management — store data in your browser (localStorage). All changes persist.</footer>
+</div>
+
+<script>
+    // ---------- DATA MODELS ----------
+    // Students: { id, rollNo, name, className }
+    // Attendance records keyed by date string YYYY-MM-DD: { studentId: status }
+    let students = [];
+    let attendanceMap = {};   // { "2025-02-20": { studentId: "present"/"absent"/"late" } }
+
+    let editingStudentId = null;   // for edit mode in student form
+
+    // Helper: get today's date string (local YYYY-MM-DD)
+    function getTodayString() {
+        const today = new Date();
+        return today.toISOString().split('T')[0];
+    }
+
+    // load from localStorage
+    function loadData() {
+        const storedStudents = localStorage.getItem("attendance_system_students");
+        const storedAttendance = localStorage.getItem("attendance_system_records");
+        if(storedStudents) students = JSON.parse(storedStudents);
+        else students = [];
+
+        if(storedAttendance) attendanceMap = JSON.parse(storedAttendance);
+        else attendanceMap = {};
+        
+        // ensure no duplicate roll nos? but edit handles it.
+        renderAll();
+    }
+
+    function saveStudents() {
+        localStorage.setItem("attendance_system_students", JSON.stringify(students));
+    }
+
+    function saveAttendance() {
+        localStorage.setItem("attendance_system_records", JSON.stringify(attendanceMap));
+    }
+
+    // helper: get attendance for a student for today
+    function getTodayStatus(studentId) {
+        const today = getTodayString();
+        if(!attendanceMap[today]) return "absent";
+        return attendanceMap[today][studentId] || "absent";
+    }
+
+    // set today status for a student
+    function setTodayStatus(studentId, status) {
+        const today = getTodayString();
+        if(!attendanceMap[today]) attendanceMap[today] = {};
+        attendanceMap[today][studentId] = status;
+        saveAttendance();
+        renderAttendanceTable();  // refresh table & stats
+    }
+
+    // Mark all present for today
+    function markAllPresent() {
+        const today = getTodayString();
+        if(!attendanceMap[today]) attendanceMap[today] = {};
+        students.forEach(student => {
+            attendanceMap[today][student.id] = "present";
+        });
+        saveAttendance();
+        renderAttendanceTable();
+    }
+
+    // reset today's attendance
+    function resetTodayAttendance() {
+        const today = getTodayString();
+        if(attendanceMap[today]) delete attendanceMap[today];
+        saveAttendance();
+        renderAttendanceTable();
+    }
+
+    // Add or Update student
+    function addOrUpdateStudent() {
+        const nameInput = document.getElementById("studentName").value.trim();
+        const rollInput = document.getElementById("studentRoll").value.trim();
+        const classInput = document.getElementById("studentClass").value.trim();
+
+        if(!nameInput) { alert("Please enter student name"); return; }
+        if(!rollInput) { alert("Please enter Roll Number / Unique ID"); return; }
+        if(!classInput) { alert("Please enter class/section"); return; }
+
+        // Check duplicate rollNo for other student (ignore current editing student)
+        const existing = students.find(s => s.rollNo === rollInput && (editingStudentId === null || s.id !== editingStudentId));
+        if(existing) {
+            alert(`Roll number "${rollInput}" already exists for ${existing.name}. Use unique roll.`);
+            return;
+        }
+
+        if(editingStudentId !== null) {
+            // update existing
+            const index = students.findIndex(s => s.id === editingStudentId);
+            if(index !== -1) {
+                students[index].name = nameInput;
+                students[index].rollNo = rollInput;
+                students[index].className = classInput;
+            }
+            editingStudentId = null;
+            document.getElementById("addStudentBtn").innerText = "➕ Add Student";
+            document.getElementById("cancelEditBtn").style.opacity = "0.7";
+        } else {
+            // create new student
+            const newId = Date.now().toString() + Math.floor(Math.random() * 10000);
+            const newStudent = {
+                id: newId,
+                rollNo: rollInput,
+                name: nameInput,
+                className: classInput
+            };
+            students.push(newStudent);
+        }
+        // clear form
+        document.getElementById("studentName").value = "";
+        document.getElementById("studentRoll").value = "";
+        document.getElementById("studentClass").value = "10-A";
+        saveStudents();
+        renderAll();
+    }
+
+    function cancelEdit() {
+        editingStudentId = null;
+        document.getElementById("addStudentBtn").innerText = "➕ Add Student";
+        document.getElementById("studentName").value = "";
+        document.getElementById("studentRoll").value = "";
+        document.getElementById("studentClass").value = "10-A";
+    }
+
+    function editStudent(studentId) {
+        const student = students.find(s => s.id === studentId);
+        if(!student) return;
+        editingStudentId = studentId;
+        document.getElementById("studentName").value = student.name;
+        document.getElementById("studentRoll").value = student.rollNo;
+        document.getElementById("studentClass").value = student.className;
+        document.getElementById("addStudentBtn").innerText = "✏️ Update Student";
+    }
+
+    function deleteStudent(studentId) {
+        if(confirm("Delete student and remove from all attendance records?")) {
+            students = students.filter(s => s.id !== studentId);
+            // also remove this student from all attendance days
+            for(let dateKey in attendanceMap) {
+                if(attendanceMap[dateKey] && attendanceMap[dateKey][studentId]) {
+                    delete attendanceMap[dateKey][studentId];
+                }
+            }
+            saveStudents();
+            saveAttendance();
+            // if editing this student was active, cancel
+            if(editingStudentId === studentId) cancelEdit();
+            renderAll();
+        }
+    }
+
+    // rendering all (global)
+    function renderAll() {
+        updateStatsAndHeader();
+        renderAttendanceTable();
+    }
+
+    function updateStatsAndHeader() {
+        const total = students.length;
+        document.getElementById("totalStudents").innerText = total;
+        const today = getTodayString();
+        let presentCount = 0;
+        let absentCount = 0;
+        if(attendanceMap[today]) {
+            const todayRec = attendanceMap[today];
+            for(let student of students) {
+                const status = todayRec[student.id] || "absent";
+                if(status === "present") presentCount++;
+                else if(status === "absent") absentCount++;
+                else if(status === "late") { /* late counts as not present for stats as "present today"? we count separately? let's define presentToday as present only */ }
+            }
+            // adjust absentCount: total - present (but late is not present)
+            const lateCount = Object.values(todayRec).filter(v => v === "late").length;
+            absentCount = total - presentCount - lateCount;
+        } else {
+            absentCount = total;
+        }
+        document.getElementById("presentToday").innerText = presentCount;
+        document.getElementById("absentToday").innerText = absentCount;
+        const dateElem = document.getElementById("currentDateDisplay");
+        if(dateElem) dateElem.innerText = new Date().toLocaleDateString(undefined, { year:'numeric', month:'long', day:'numeric' });
+        const dateHint = document.getElementById("dateHint");
+        if(dateHint) dateHint.innerText = getTodayString();
+    }
+
+    function renderAttendanceTable() {
+        const tbody = document.getElementById("attendanceTableBody");
+        if(!tbody) return;
+        const searchTerm = document.getElementById("searchStudentInput")?.value.toLowerCase() || "";
+        const statusFilter = document.getElementById("filterStatusSelect")?.value || "all";
+        const today = getTodayString();
+        const todayAttendance = attendanceMap[today] || {};
+
+        let filteredStudents = [...students];
+        if(searchTerm) {
+            filteredStudents = filteredStudents.filter(s => s.name.toLowerCase().includes(searchTerm) || s.rollNo.toLowerCase().includes(searchTerm));
+        }
+
+        // apply status filter
+        if(statusFilter !== "all") {
+            filteredStudents = filteredStudents.filter(s => {
+                const st = todayAttendance[s.id] || "absent";
+                return st === statusFilter;
+            });
+        }
+
+        if(filteredStudents.length === 0) {
+            tbody.innerHTML = `<tr class="empty-row"><td colspan="5">✨ No matching students. Add or adjust filters.</td></tr>`;
+            return;
+        }
+
+        let html = "";
+        for(let student of filteredStudents) {
+            const status = todayAttendance[student.id] || "absent";
+            let statusText = status.charAt(0).toUpperCase() + status.slice(1);
+            let statusClass = "";
+            if(status === "present") statusClass = "status-present";
+            else if(status === "absent") statusClass = "status-absent";
+            else statusClass = "status-late";
+            
+            html += `<tr>
+                <td><strong>${escapeHtml(student.rollNo)}</strong></td>
+                <td class="student-name">${escapeHtml(student.name)}</td>
+                <td>${escapeHtml(student.className)}</td>
+                <td>
+                    <span class="status-badge ${statusClass}">${statusText}</span>
+                </td>
+                <td class="action-btns">
+                    <select class="status-select small-select" data-id="${student.id}" style="padding:8px 8px; border-radius:32px; border:1px solid #cbdde9; background:white;">
+                        <option value="present" ${status === "present" ? "selected" : ""}>✅ Present</option>
+                        <option value="absent" ${status === "absent" ? "selected" : ""}>❌ Absent</option>
+                        <option value="late" ${status === "late" ? "selected" : ""}>⏰ Late</option>
+                    </select>
+                    <button class="icon-btn edit-btn" data-action="edit" data-id="${student.id}" title="Edit student">✏️</button>
+                    <button class="icon-btn delete-btn" data-action="delete" data-id="${student.id}" title="Delete student">🗑️</button>
+                </td>
+            </tr>`;
+        }
+        tbody.innerHTML = html;
+
+        // attach event listeners for status selects and edit/delete
+        document.querySelectorAll(".status-select").forEach(select => {
+            select.addEventListener("change", (e) => {
+                const studentId = select.getAttribute("data-id");
+                const newStatus = select.value;
+                setTodayStatus(studentId, newStatus);
+                updateStatsAndHeader();
+            });
+        });
+        document.querySelectorAll(".edit-btn").forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                const sid = btn.getAttribute("data-id");
+                editStudent(sid);
+            });
+        });
+        document.querySelectorAll(".delete-btn").forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                const sid = btn.getAttribute("data-id");
+                deleteStudent(sid);
+            });
+        });
+        updateStatsAndHeader();
+    }
+
+    function escapeHtml(str) {
+        if(!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if(m === '&') return '&amp;';
+            if(m === '<') return '&lt;';
+            if(m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    // export summary CSV (today's attendance)
+    function exportCSV() {
+        const today = getTodayString();
+        const rec = attendanceMap[today] || {};
+        let csvRows = [["Roll No", "Student Name", "Class", "Status"]];
+        students.forEach(std => {
+            const status = rec[std.id] || "absent";
+            csvRows.push([`"${std.rollNo}"`, `"${std.name}"`, `"${std.className}"`, status]);
+        });
+        const csvContent = csvRows.map(row => row.join(",")).join("\n");
+        const blob = new Blob([csvContent], {type: "text/csv"});
+        const link = document.createElement("a");
+        const url = URL.createObjectURL(blob);
+        link.href = url;
+        link.download = `attendance_${today}.csv`;
+        link.click();
+        URL.revokeObjectURL(url);
+    }
+
+    function loadDemoData() {
+        if(students.length > 0 && confirm("Demo will add 4 sample students. Existing students stay? Press OK to merge.")) {
+            // add demo students if roll not exist
+            const demo = [
+                { rollNo: "101", name: "Aarav Mehta", className: "10-A" },
+                { rollNo: "102", name: "Ananya Verma", className: "10-A" },
+                { rollNo: "103", name: "Rohan Nair", className: "10-B" },
+                { rollNo: "104", name: "Ishita Roy", className: "10-B" }
+            ];
+            let added = 0;
+            demo.forEach(d => {
+                const exists = students.some(s => s.rollNo === d.rollNo);
+                if(!exists) {
+                    students.push({
+                        id: Date.now() + Math.random() + added,
+                        rollNo: d.rollNo,
+                        name: d.name,
+                        className: d.className
+                    });
+                    added++;
+                }
+            });
+            if(added) saveStudents();
+            alert(`Added ${added} demo students.`);
+            renderAll();
+        } else if(students.length === 0) {
+            const demo = [
+                { rollNo: "101", name: "Aarav Mehta", className: "10-A" },
+                { rollNo: "102", name: "Ananya Verma", className: "10-A" },
+                { rollNo: "103", name: "Rohan Nair", className: "10-B" },
+                { rollNo: "104", name: "Ishita Roy", className: "10-B" }
+            ];
+            students = demo.map((d, idx) => ({ id: Date.now()+idx, rollNo: d.rollNo, name: d.name, className: d.className }));
+            saveStudents();
+            renderAll();
+            alert("Demo class loaded!");
+        }
+    }
+
+    // Event listeners + initial load
+    window.addEventListener("DOMContentLoaded", () => {
+        loadData();
+        document.getElementById("addStudentBtn").addEventListener("click", addOrUpdateStudent);
+        document.getElementById("cancelEditBtn").addEventListener("click", cancelEdit);
+        document.getElementById("markAllPresentBtn").addEventListener("click", markAllPresent);
+        document.getElementById("resetTodayBtn").addEventListener("click", resetTodayAttendance);
+        document.getElementById("exportSummaryBtn").addEventListener("click", exportCSV);
+        document.getElementById("demoDataBtn").addEventListener("click", loadDemoData);
+        document.getElementById("searchStudentInput").addEventListener("input", () => renderAttendanceTable());
+        document.getElementById("filterStatusSelect").addEventListener("change", () => renderAttendanceTable());
+        renderAll();
+    });
+</script>
+</body>
+</html>
