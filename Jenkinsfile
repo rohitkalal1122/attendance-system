@@ -10,7 +10,19 @@ pipeline {
 
         stage('Build') {
             steps {
-                bat 'echo Building Attendance Project...'
+                bat 'echo Building project...'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                bat 'echo Running tests...'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                bat 'echo Deploying project...'
             }
         }
     }
