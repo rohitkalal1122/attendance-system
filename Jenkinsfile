@@ -28,7 +28,11 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                bat 'xcopy * C:\\xampp\\htdocs\\ /E /H /C /I /Y'
+                bat '''
+                echo Deploying project to XAMPP...
+                if not exist C:\\xampp\\htdocs mkdir C:\\xampp\\htdocs
+                xcopy * C:\\xampp\\htdocs\\ /E /H /C /I /Y
+                '''
             }
         }
     }
