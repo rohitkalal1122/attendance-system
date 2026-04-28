@@ -8,6 +8,12 @@ pipeline {
             }
         }
 
+        stage('Clone') {
+            steps {
+                bat 'echo Cloning repository...'
+            }
+        }
+
         stage('Build') {
             steps {
                 bat 'echo Building project...'
@@ -22,7 +28,7 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                bat 'echo Deploying project...'
+                bat 'xcopy * C:\\xampp\\htdocs\\ /E /H /C /I /Y'
             }
         }
     }
